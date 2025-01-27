@@ -1,0 +1,92 @@
+﻿@model IEnumerable<PruebaTecnica.Models.Producto>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Acciones</th>
+            <th>Nombre</th>
+            <th>Tipo Producto</th>
+            <th>Fecha Ingreso</th>
+            <th>Fecha Devolucion</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var Producto in Model)
+        {
+
+            if (Producto.Bloqueado == false)
+            {
+        <tr>
+            <td>
+                <a class="btn btn-primary" onclick="location.href='@Url.Action("CrearDevolucion", "Devoluciones", new { id = @Producto.IdProducto})'">Pedir Devolucion</a>
+            </td>
+
+
+            <td>
+                @Producto.NombreProducto
+            </td>
+
+            <td>
+                @Producto.TipoProducto
+            </td>
+
+            <td>
+                @Producto.FechaIngreso
+            </td>
+
+            <td>
+                @Producto.TiempoDevolucion
+            </td>
+
+            <td>
+                Disponible
+
+            </td>
+
+
+        </tr>
+            }
+
+            else
+            {
+    <tr>
+
+        <td>
+        </td>
+
+        <td>
+            @Producto.NombreProducto
+        </td>
+
+        <td>
+            @Producto.TipoProducto
+        </td>
+
+        <td>
+            @Producto.FechaIngreso
+        </td>
+
+        <td>
+            @Producto.TiempoDevolucion
+        </td>
+
+        <td>
+            No disponible para devolucion
+        </td>
+
+
+    </tr>
+            }
+
+        }
+    </tbody>
+
+</table>
+
+

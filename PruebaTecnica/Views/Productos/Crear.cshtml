@@ -1,0 +1,51 @@
+﻿@model PruebaTecnica.Models.Producto
+
+
+@{
+    ViewBag.Title = "Crear";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+
+<form method="post" action="@Url.Action("Crear", "Productos")">
+    <div class="mb-3">
+        <label for="NombreProducto" class="form-label">Nombre Producto</label>
+        <input type="text" id="NombreProducto" name="NombreProducto" class="form-control" />
+        @*<span asp-validation-for="persona.Nombre" class="text-danger"></span>*@
+    </div>
+
+    <div class="mb-3">
+        <label for="TipoProducto" class="form-label">Tipo Producto</label>
+        <input type="text" id="TipoProducto" name="TipoProducto" class="form-control" />
+
+        @*<span asp-validation-for="persona.Nombre" class="text-danger"></span>*@
+    </div>
+
+
+    <div class="mb-3">
+        <label for="FechaIngreso" class="form-label">Fecha Ingreso</label>
+        <input type="datetime-local" id="FechaIngreso" name="FechaIngreso" class="form-control" />
+
+        @*<span asp-validation-for="persona.Nombre" class="text-danger"></span>*@
+    </div>
+
+
+
+
+    <div class="mb-3 ">
+        <label for="TiempoDevolucion" class="form-label">Tiempo Devolucion</label>
+        <input type="datetime-local" id="TiempoDevolucion" name="TiempoDevolucion" class="form-control" />
+    </div>
+   
+    <button type="submit" class="btn btn-primary">Crear</button>
+
+</form>
+
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"></partial>  
+}

@@ -1,0 +1,35 @@
+﻿@model PruebaTecnica.Models.ViewModels.SignUpViewModel
+
+<html>
+<head>
+    <link href="~/style.css" rel="stylesheet" />
+</head>
+
+<body>
+    <section>
+        <div class="container active">
+            <div class="user signupBx ">
+                <div class="formBx">
+                    <form method="post" action="~/Account/SignUp">
+                        <h2>Crea una cuenta</h2>
+
+                        @Html.TextBoxFor(model => model.Nombre, new { placeholder = "Nombre Usuario" })
+                        @*<input type="text" placeholder="Usuario" for="Nombre" />*@
+
+                        @Html.TextBoxFor(model => model.Contraseña, new { placeholder = "Contraseña" })
+                        @Html.TextBoxFor(model => model.RepetirContraseña, new { placeholder = "RepetirContraseña" })
+
+                        @Html.ValidationSummary()
+                        <input type="submit" name="" value="Registrar" />
+                        <p class="signup">
+                            ¿Ya tienes una cuenta ?
+                            <a href="~/Account/Login">Inicia sesión</a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

@@ -1,0 +1,65 @@
+﻿@model IEnumerable<PruebaTecnica.Models.Producto>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Acciones</th>
+            <th>Nombre</th>
+            <th>Tipo Producto</th>
+            <th>Fecha Ingreso</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var producto in Model)
+        {
+        <tr>
+            <td>
+                <a class="btn btn-primary" asp-action="Editar" asp-controller="Persona" asp-route-id="@producto.IdProducto">Editar</a>
+                <a class="btn btn-danger" asp-action="Eliminar" asp-controller="Persona" asp-route-id="@producto.IdProducto">Borrar</a>
+            </td>
+
+
+            <td>
+                @producto.NombreProducto
+            </td>
+
+            <td>
+                @producto.TipoProducto
+            </td>
+
+            <td>
+                @producto.FechaIngreso
+            </td>
+
+
+            @if (producto.Bloqueado == false)
+            {
+                <td>
+                    Disponible
+
+                </td>
+            }
+            else
+            {
+                <td>
+                    No disponible
+
+                </td>
+            }
+
+
+
+
+        </tr>
+        }
+    </tbody>
+
+</table>
+
+

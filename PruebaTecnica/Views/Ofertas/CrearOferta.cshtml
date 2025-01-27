@@ -1,0 +1,43 @@
+﻿@model PruebaTecnica.Models.ViewModels.OfertasViewModel
+@{
+    ViewBag.Title = "CrearOferta";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h2>CrearOferta</h2>
+
+<form method="post" action="@Url.Action("CrearOferta", "Ofertas")">
+    @Html.HiddenFor(model => model.Idproducto)
+
+    <div class="mb-3">
+        @*<label for="@Model.oferta.Ofertante" name="@Model.oferta.Ofertante" class="form-label">Nombre Ofertante</label>*@
+        @Html.LabelFor(model => model.oferta.Ofertante)
+        @Html.TextBoxFor(model => model.oferta.Ofertante, new { @class = "form-control input-sm" })
+
+
+
+        @*<span asp-validation-for="@Model.oferta.Ofertante" class="text-danger"></span>*@
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(model => model.oferta.NumeroOfertante)
+        @Html.TextBoxFor(model => model.oferta.NumeroOfertante, new { @class = "form-control input-sm" })
+
+        @*<span asp-validation-for="persona.Nombre" class="text-danger"></span>*@
+    </div>
+
+
+    <div class="mb-3">
+        @Html.LabelFor(model => model.oferta.MontoOferta)
+        @*<input type="number" name="@Model.oferta.MontoOferta" class="form-control" />*@
+
+        @Html.TextBoxFor(model => @Model.oferta.MontoOferta, new { @class = "form-control input-sm"})
+
+        @*<span asp-validation-for="persona.Nombre" class="text-danger"></span>*@
+    </div>
+
+    <button type="submit" class="btn btn-primary">Crear</button>
+
+</form>
+

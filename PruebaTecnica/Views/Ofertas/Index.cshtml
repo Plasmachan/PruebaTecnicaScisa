@@ -1,0 +1,162 @@
+﻿@model  List<PruebaTecnica.Models.ViewModels.ProductosOfertadosViewModel>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Acciones</th>
+            <th>Nombre</th>
+            <th>Tipo Producto</th>
+            <th>Fecha Ingreso</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var Producto in Model)
+        {
+
+            if (Producto.TieneDevolcion == false)
+            {
+
+
+                <tr>
+
+                    <td>
+                        @if (Producto.Tiene3Ofertas)
+                        {
+                            <button class="btn btn-primary BotonAlarma" data-ofertaid="@Producto.OfertaMayor.Ofertante" data-ofertavalor2="@Producto.OfertaMayor.NumeroOfertante" data-ofertavalor3="@Producto.OfertaMayor.MontoOferta">Ver Oferta Grande</button>
+                        }
+
+                        else {
+                        <button class="btn btn-primary BotonOferta" data-productoid="@Producto.IdProducto">Ofertar</button>
+                        }
+
+                    </td>
+
+
+                    <td>
+                        @Producto.NombreProducto
+                    </td>
+
+                    <td>
+                        @Producto.TipoProducto
+                    </td>
+
+                    <td>
+                        @Producto.FechaIngreso
+                    </td>
+
+
+
+                    <td>
+                        Disponible
+
+                    </td>
+
+                </tr>
+            }
+
+            else
+            {
+                <tr>
+                    <td>
+                       
+                    </td>
+
+
+                    <td>
+                        @Producto.NombreProducto
+                    </td>
+
+                    <td>
+                        @Producto.TipoProducto
+                    </td>
+
+                    <td>
+                        @Producto.FechaIngreso
+                    </td>
+
+                    <td>
+                        No disponible
+
+                    </td>
+
+
+
+
+
+                </tr>
+            }
+
+
+
+
+        }
+    </tbody>
+
+</table>
+
+<!-- Aquí se mostrará el resultado de la operación -->
+<div id="resultado"></div>
+
+<!-- Incluir jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+
+        $('.BotonAlarma').click(function () {
+
+            
+
+            var Ofertamayor = $(this).data('ofertaid');
+            var Ofertamayor1 = $(this).data('ofertavalor2');
+            var Ofertamayor2 = $(this).data('ofertavalor3');
+
+            var mensaje = 'La oferta mas grande es de ' + Ofertamayor + ' con el numero de ' + Ofertamayor1 + ' con un monto de ' + Ofertamayor2
+
+            alert(mensaje);
+   
+        }) 
+
+
+
+        $('.BotonOferta').click(function () {
+
+
+            var productoIdv2 = $(this).data('productoid');
+
+
+            $.ajax({
+                url: '/Ofertas/VerificarOfertas/' + productoIdv2,
+                type: 'POST',
+
+                success: function (data) {
+                    // Mostrar el resultado en la página
+                    if (data.success) {
+                        
+                            window.location.href = data.redirectUrl;
+
+
+                    } else {
+                        alert(data.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Manejo de errores
+                    $('#resultado').html('<div class="alert alert-danger">Error al procesar la solicitud.</div>');
+                }
+            });
+        });
+
+
+
+
+
+    });
+</script>

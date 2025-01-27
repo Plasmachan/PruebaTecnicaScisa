@@ -1,0 +1,30 @@
+﻿@model PruebaTecnica.Models.ViewModels.LoginViewModel
+<html>
+<head>
+    <link href="~/style.css" rel="stylesheet" />
+</head>
+
+<body>
+    <section>
+        <div class="container">
+            <div class="user signinBx">
+                <div class="formBx">
+                    <form action="~/Account/Login" method="post">
+                        @Html.AntiForgeryToken()
+                        <h2>Inicio de sesión</h2>
+                        @Html.TextBoxFor(model => model.Usuario, new { placeholder = "Nombre Usuario" })
+                        @Html.TextBoxFor(model => model.Contraseña, new { placeholder = "Contraseña" })
+                        @Html.ValidationSummary()
+                        <input type="submit" name="" value="Iniciar sesión" />
+                        <p class="signup">
+                            ¿No tienes una cuenta?
+                            <a href="~/Account/SignUp">Registrate</a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>
