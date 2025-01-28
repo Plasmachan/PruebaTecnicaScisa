@@ -29,7 +29,18 @@ namespace PruebaTecnica.Repositories
             context.SaveChanges();
         }
 
-    
+        public void Editar(Producto P)
+        {
+            var producto = context.Productoes.FirstOrDefault(x=>x.IdProducto == P.IdProducto);
+
+            producto.NombreProducto = P.NombreProducto;
+            producto.FechaIngreso = P.FechaIngreso;
+            producto.TiempoDevolucion = P.TiempoDevolucion;
+
+            context.SaveChanges();
+        }
+
+
 
         public Producto GetProductoById(int Id)
         {

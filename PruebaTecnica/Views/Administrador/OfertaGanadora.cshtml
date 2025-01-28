@@ -1,0 +1,50 @@
+﻿@model PruebaTecnica.Models.Oferta
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>OfertaGanadora</title>
+</head>
+<body>
+    <div>
+        <form method="post" action="@Url.Action("OfertaGanadora", "Administrador")">
+            @Html.HiddenFor(model => model.IdOferta)
+            @Html.HiddenFor(model => model.IdProducto)
+            <div class="mb-3">
+                @*<label for="@Model.oferta.Ofertante" name="@Model.oferta.Ofertante" class="form-label">Nombre Ofertante</label>*@
+                @Html.LabelFor(model => model.Ofertante)
+                @Html.TextBoxFor(model => model.Ofertante, new { @class = "form-control input-sm" })
+
+
+
+                @*<span asp-validation-for="@Model.oferta.Ofertante" class="text-danger"></span>*@
+            </div>
+
+            <div class="mb-3">
+                @Html.LabelFor(model => model.NumeroOfertante)
+                @Html.TextBoxFor(model => model.NumeroOfertante, new { @class = "form-control input-sm" })
+
+                @*<span asp-validation-for="persona.Nombre" class="text-danger"></span>*@
+            </div>
+
+
+            <div class="mb-3">
+                @Html.LabelFor(model => model.MontoOferta)
+                @*<input type="number" name="@Model.oferta.MontoOferta" class="form-control" />*@
+
+                @Html.TextBoxFor(model => model.MontoOferta, new { @class = "form-control input-sm" })
+
+                @*<span asp-validation-for="persona.Nombre" class="text-danger"></span>*@
+            </div>
+
+            <button type="submit" class="btn btn-primary">Validar</button>
+
+        </form>
+    </div>
+</body>
+</html>

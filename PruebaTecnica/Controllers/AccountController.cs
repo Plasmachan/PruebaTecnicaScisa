@@ -34,7 +34,7 @@ namespace PruebaTecnica.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Login(LoginViewModel vm)
+        public  ActionResult Login(LoginViewModel vm)
         {
             Model1 model1 = new Model1();
             UsuarioRepository usuarioRepository = new UsuarioRepository(model1);
@@ -50,8 +50,8 @@ namespace PruebaTecnica.Controllers
 
                     List<Claim> claims = new List<Claim>();
                     claims.Add(new Claim("Id", usuario.IdUsuario.ToString()));
-                    claims.Add(new Claim(ClaimTypes.Name, usuario.NombreUsuario));
-                    claims.Add(new Claim(ClaimTypes.Role, "Administrador"));
+                    claims.Add(new Claim("Name", usuario.NombreUsuario));
+                    claims.Add(new Claim("Role", "Administrador"));
                     ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "Forms");
                     ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
                     HttpContext.User = claimsPrincipal;
@@ -60,33 +60,26 @@ namespace PruebaTecnica.Controllers
 
 
 
-
-
-
-
-
+                    var claimsData = string.Join(";", claims.Select(c => $"{c.Type}:{c.Value}"));
 
 
                     var authTicket = new FormsAuthenticationTicket(
                         1,                             // version
                         usuario.NombreUsuario,                      // user name
                         DateTime.Now,                  // created
-                        DateTime.Now.AddMinutes(20),   // expires
+                        DateTime.Now.AddMinutes(40),   // expires
                         true,                    // persistent?
-                        "Moderator;Admin"                        // can be used to store roles
+                      claimsData                     // can be used to store roles
                         );
 
 
                     string encryptedTicket = FormsAuthentication.Encrypt(authTicket);
-        
+
 
                     var authCookie = new HttpCookie(FormsAuthentication.FormsCookieName, encryptedTicket);
 
                     FormsAuthentication.SetAuthCookie(User.Identity.Name, false);
                     System.Web.HttpContext.Current.Response.Cookies.Add(authCookie);
-
-
-
 
 
                     // Redirigir a la página principal o área protegida
@@ -114,20 +107,35 @@ namespace PruebaTecnica.Controllers
 
             Model1 model1 = new Model1();
             UsuarioRepository usuarioRepository = new UsuarioRepository(model1);
+            var existeUsuario = usuarioRepository.ExisteUsuario(vm.Nombre);
+
 
             if (ModelState.IsValid)
             {
-                Usuario u = new Usuario();
-                u.NombreUsuario = vm.Nombre;
-                u.Contraseña = Encriptacion.GetMD5(vm.Contraseña);
-                u.TipoUsuario = "Administrador";
-                usuarioRepository.InsertarUsuario(u);
-                return RedirectToAction("Login");
+
+                if(existeUsuario == false)
+                {
+                    Usuario u = new Usuario();
+                    u.NombreUsuario = vm.Nombre;
+                    u.Contraseña = Encriptacion.GetMD5(vm.Contraseña);
+                    u.TipoUsuario = "Administrador";
+                    usuarioRepository.InsertarUsuario(u);
+                    return RedirectToAction("Login");
+                }
+
+                else
+                {
+                    ModelState.AddModelError("", "Usuario o contraseña incorrectos.");
+                }
+
+               
             }
             else
             {
                 return View(vm);
             }
+
+            return View();
         }
 
 
@@ -136,7 +144,7 @@ namespace PruebaTecnica.Controllers
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();  // Eliminar la cookie de autenticación
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction("Index", "Ofertas");
         }
 
     }

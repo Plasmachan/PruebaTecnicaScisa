@@ -23,10 +23,23 @@ namespace PruebaTecnica.Repositories
             context.SaveChanges(); 
         }
 
- 
+
+        public void EliminarOferta(Oferta oferta)
+        {
+            context.Ofertas.Remove(oferta);
+            context.SaveChanges();
+        }
+
+        public Oferta GetOferta(int id)
+        {
+            return context.Ofertas.FirstOrDefault(x=>x.IdOferta == id);
+        }
+
+        
+
         public IEnumerable<Oferta> ObtenerOfertasPorProducto(int IdProducto)
         {
-            return context.Ofertas.Where(x => x.IdProducto == IdProducto).OrderByDescending(x => x.FechaOferta).ToList();
+            return context.Ofertas.Where(x => x.IdProducto == IdProducto).OrderByDescending(x => x.MontoOferta).ToList();
         }
 
        

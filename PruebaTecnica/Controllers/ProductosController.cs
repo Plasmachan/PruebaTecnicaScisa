@@ -36,9 +36,6 @@ namespace PruebaTecnica.Controllers
                 Model1 context = new Model1();
                 ProductoRepository productoRepository = new ProductoRepository(context);
 
-                //var settingTiempoDevolucion = TimeSpan.FromMinutes(5); 
-                //producto.TiempoDevolucion = producto.FechaIngreso.Add(settingTiempoDevolucion);
-
                 productoRepository.AgregarProducto(producto);
 
                 return RedirectToAction("Index");

@@ -1,16 +1,9 @@
 ﻿@model PruebaTecnica.Models.Producto
 
 
-@{
-    ViewBag.Title = "Crear";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
 
 
-
-
-
-<form method="post" action="@Url.Action("Crear", "Productos")">
+<form method="post" action="@Url.Action("Crear", "Administrador")">
     <div class="mb-3">
         <label for="NombreProducto" class="form-label">Nombre Producto</label>
         <input type="text" id="NombreProducto" name="NombreProducto" class="form-control" />
@@ -46,6 +39,3 @@
 
 
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial"></partial>  
-}

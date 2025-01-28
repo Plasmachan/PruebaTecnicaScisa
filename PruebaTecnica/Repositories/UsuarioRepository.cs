@@ -23,6 +23,30 @@ namespace PruebaTecnica.Repositories
             context.SaveChanges();
         }
 
+        public bool ExisteUsuario(string name)
+        {
+            var usuario = context.Usuarios.FirstOrDefault(x=>x.NombreUsuario == name) ;
+
+            if (usuario != null)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+
+        public Usuario GetUsuarioByName(string Name)
+        {
+            var usuario = context.Usuarios.FirstOrDefault(x => x.NombreUsuario == Name);
+
+            if(usuario != null)
+            {
+                return usuario;
+            }
+            return null;
+        }
+
 
         public Usuario ValidarUsuario(string username, string password)
         {

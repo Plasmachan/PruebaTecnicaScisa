@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Principal;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
@@ -27,21 +30,57 @@ namespace PruebaTecnica
             if (authCookie == null || authCookie.Value == "")
                 return;
 
+
             FormsAuthenticationTicket authTicket;
             try
             {
                 authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+                var claims = authTicket.UserData.Split(';')
+                  .Select(data =>
+                  {
+                      var parts = data.Split(':');
+                      return new Claim(parts[0], parts[1]);
+                  })
+                  .ToList();
+
+
+                var claimsIdentity = new ClaimsIdentity(claims, "Forms");
+                var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+                if (Context.User != null)
+                    HttpContext.Current.User = claimsPrincipal;
             }
             catch
             {
                 return;
             }
 
-            // retrieve roles from UserData
-            string[] roles = authTicket.UserData.Split(';');
+        }
 
-            if (Context.User != null)
-                Context.User = new GenericPrincipal(Context.User.Identity, roles);
+
+
+
+
+        protected void Application_PostAuthenticateRequest(Object sender, EventArgs e)
+        {
+            if(Request.RequestType == "POST" && !User.Identity.IsAuthenticated && !HasAnonymousAccess(Context))
+            {
+                Configuration configuration = WebConfigurationManager.OpenWebConfiguration("~");
+               SystemWebSectionGroup grp = (SystemWebSectionGroup)configuration.GetSectionGroup("system.web");
+                AuthenticationSection auth = grp.Authentication;
+
+                if(auth.Mode == AuthenticationMode.Forms)
+                {
+                    Response.Redirect(FormsAuthentication.LoginUrl, true);
+                    Response.End();
+                }
+            }
+
+        }
+
+        public static bool HasAnonymousAccess(HttpContext context)
+        {
+            return UrlAuthorizationModule.CheckUrlAccessForPrincipal(context.Request.Path, new GenericPrincipal(new GenericIdentity(string.Empty), null), context.Request.HttpMethod);
         }
 
     }
