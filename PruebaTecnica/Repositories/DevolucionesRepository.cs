@@ -25,6 +25,12 @@ namespace PruebaTecnica.Repositories
             return true;
         }
 
+        public void Eliminar(IEnumerable<Devolucione> ListaDevolucion)
+        {
+            context.Devoluciones.RemoveRange(ListaDevolucion);
+            context.SaveChanges();
+        }
+
        
         public IEnumerable<Devolucione> ObtenerDevolucionesPorProducto(int productoId)
         {

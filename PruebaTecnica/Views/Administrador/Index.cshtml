@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PruebaTecnica.Models.Producto>
+﻿@model IEnumerable<PruebaTecnica.Models.ViewModels.ProductosOfertadosViewModel>
 @{
     Layout = null;
 }
@@ -39,7 +39,7 @@
                     <th>Nombre</th>
                     <th>Tipo Producto</th>
                     <th>Fecha Ingreso</th>
-                    <th>Estado</th>
+                  
                 </tr>
             </thead>
             <tbody>
@@ -48,7 +48,7 @@
                 {
                     <tr>
                         <td>
-                            <a class="btn btn-primary"  onclick="location.href='@Url.Action("Editar", "Administrador", new { id = @producto.IdProducto})'">Editar</a>
+                            <a class="btn btn-primary" onclick="location.href='@Url.Action("Editar", "Administrador", new { id = producto.IdProducto })'">Editar</a>
                             <a class="btn btn-danger" onclick="location.href='@Url.Action("Eliminar", "Administrador", new { id = @producto.IdProducto})'">Borrar</a>
                         </td>
 
@@ -64,24 +64,6 @@
                         <td>
                             @producto.FechaIngreso
                         </td>
-
-
-                        @if (producto.Bloqueado == false)
-                        {
-                            <td>
-                                Disponible
-
-                            </td>
-                        }
-                        else
-                        {
-                            <td>
-                                No disponible
-
-                            </td>
-                        }
-
-
 
 
                     </tr>

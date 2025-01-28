@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PruebaTecnica.Models.Producto>
+﻿@model IEnumerable<PruebaTecnica.Models.ViewModels.TiempoDevolucionViewModel>
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -12,6 +12,7 @@
             <th>Tipo Producto</th>
             <th>Fecha Ingreso</th>
             <th>Fecha Devolucion</th>
+            <th>Tiempo Devolucion</th>
             <th>Estado</th>
         </tr>
     </thead>
@@ -44,6 +45,11 @@
                 @Producto.TiempoDevolucion
             </td>
 
+
+            <td>
+                @Producto.TiempoFormateado
+            </td>
+
             <td>
                 Disponible
 
@@ -74,6 +80,10 @@
 
         <td>
             @Producto.TiempoDevolucion
+        </td>
+
+        <td>
+            @Producto.TiempoFormateado
         </td>
 
         <td>

@@ -14,12 +14,18 @@ namespace PruebaTecnica.Controllers
     public class AdministradorController : Controller
     {
 
-
+        [Authorize]
         public ActionResult Index()
         {
-            Model1 model1 = new Model1();
-            UsuarioRepository usuarioRepository = new UsuarioRepository(model1);
-            ProductoRepository productoRepository = new ProductoRepository(model1);
+            Model1 context = new Model1();
+            ProductoRepository productoRepository = new ProductoRepository(context);
+            OfertasRepository OfertasRepository = new OfertasRepository(context);
+            DevolucionesRepository devolucionesRepository = new DevolucionesRepository(context);
+            UsuarioRepository usuarioRepository = new UsuarioRepository(context);
+
+
+            
+           
 
 
             var identity = (ClaimsIdentity)User.Identity;
@@ -31,8 +37,6 @@ namespace PruebaTecnica.Controllers
                 return RedirectToAction("Error", "Administrador");
             }
             
-           
-          
          
             var PrimeraPosicion = claims.FirstOrDefault(x => x.Type == "Id");
             var Id = PrimeraPosicion.Value;
@@ -49,7 +53,21 @@ namespace PruebaTecnica.Controllers
                 if(UsuarioLogueado.TipoUsuario ==  Role)
                 {
                     var productos = productoRepository.GetProductos();
-                    return View(productos);
+
+                    List<ProductosOfertadosViewModel> viewModels = new List<ProductosOfertadosViewModel>();
+
+
+                    foreach (var producto in productos)
+                    {
+                        ProductosOfertadosViewModel vm = new ProductosOfertadosViewModel(producto)
+                        {
+                            Tiene3Ofertas = OfertasRepository.TieneMaximoDeOfertas(producto.IdProducto),
+                            OfertaMayor = OfertasRepository.ObtenerOfertaMayor(producto.IdProducto),
+                            TieneDevolcion = devolucionesRepository.ExisteUnaDevolucion(producto.IdProducto)
+                        };
+                        viewModels.Add(vm);
+                    }
+                    return View(viewModels);
                 }               
             }
             else
@@ -68,6 +86,7 @@ namespace PruebaTecnica.Controllers
 
 
         [HttpGet]
+        [Authorize]
         public ActionResult Crear2()
         {
             Model1 model1 = new Model1();
@@ -216,6 +235,7 @@ namespace PruebaTecnica.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public ActionResult VerOfertas(int id)
         {
             Model1 context = new Model1();
@@ -268,6 +288,7 @@ namespace PruebaTecnica.Controllers
 
 
         [HttpGet]
+        [Authorize]
         public ActionResult OfertaGanadora(int id)
         {
 
@@ -322,19 +343,54 @@ namespace PruebaTecnica.Controllers
 
 
         [HttpGet]
+        [Authorize]
         public ActionResult Editar(int id)
         {
-
-            var identity = (ClaimsIdentity)User.Identity;
-            IEnumerable<Claim> claims = identity.Claims;
 
 
             Model1 context = new Model1();
             ProductoRepository productoRepository = new ProductoRepository(context);
+            UsuarioRepository usuarioRepository = new UsuarioRepository(context);
+
+            var identity = (ClaimsIdentity)User.Identity;
+            IEnumerable<Claim> claims = identity.Claims;
+            var valorvacio = claims.FirstOrDefault();
+
+            if (valorvacio.Value == "")
+            {
+                return RedirectToAction("Error", "Administrador");
+            }
+
+            var PrimeraPosicion = claims.FirstOrDefault(x => x.Type == "Id");
+            var Id = PrimeraPosicion.Value;
+            var Segunda = claims.FirstOrDefault(x => x.Type == "Name");
+            var UserNombre = Segunda.Value;
+            var Tercera = claims.FirstOrDefault(x => x.Type == "Role");
+            var Role = Tercera.Value;
+            var UsuarioLogueado = usuarioRepository.GetUsuarioByName(UserNombre);
+
+            if (UsuarioLogueado != null)
+            {
+                if (UsuarioLogueado.TipoUsuario == Role)
+                {
+                    if (ModelState.IsValid)
+                    {
+
+                        var producto = productoRepository.GetProductoById(id);
+                        return View(producto);
 
 
-            var producto = productoRepository.GetProductoById(id);
-            return View(producto);
+                    }
+                }
+
+                else
+                {
+                    RedirectToAction("Error", "Administrador");
+                }
+            }
+
+            return View();
+
         }
 
 
@@ -342,15 +398,160 @@ namespace PruebaTecnica.Controllers
         public ActionResult Editar(Producto p)
         {
 
+            Model1 context = new Model1();
+            ProductoRepository productoRepository = new ProductoRepository(context);
+            UsuarioRepository usuarioRepository = new UsuarioRepository(context);
+
+
             var identity = (ClaimsIdentity)User.Identity;
             IEnumerable<Claim> claims = identity.Claims;
+            var valorvacio = claims.FirstOrDefault();
+            if (valorvacio.Value == "")
+            {
+                return RedirectToAction("Error", "Administrador");
+            }
+
+            var PrimeraPosicion = claims.FirstOrDefault(x => x.Type == "Id");
+            var Id = PrimeraPosicion.Value;
+            var Segunda = claims.FirstOrDefault(x => x.Type == "Name");
+            var UserNombre = Segunda.Value;
+            var Tercera = claims.FirstOrDefault(x => x.Type == "Role");
+            var Role = Tercera.Value;
+            var UsuarioLogueado = usuarioRepository.GetUsuarioByName(UserNombre);
+
+
+            if (UsuarioLogueado != null)
+            {
+                if (UsuarioLogueado.TipoUsuario == Role)
+                {
+                    if (ModelState.IsValid)
+                    {
+
+
+
+                        productoRepository.Editar(p);
+                        return RedirectToAction("Index", "Administrador");
+
+
+                    }
+                }
+
+                else
+                {
+                    RedirectToAction("Error", "Administrador");
+                }
+            }
+
+            return View();
+        }
+
+
+        [HttpGet]
+        [Authorize]
+        public ActionResult Eliminar(int id)
+        {
 
 
             Model1 context = new Model1();
             ProductoRepository productoRepository = new ProductoRepository(context);
+            UsuarioRepository usuarioRepository = new UsuarioRepository(context);
 
-            productoRepository.Editar(p);
-             
+            var identity = (ClaimsIdentity)User.Identity;
+            IEnumerable<Claim> claims = identity.Claims;
+            var valorvacio = claims.FirstOrDefault();
+
+            if (valorvacio.Value == "")
+            {
+                return RedirectToAction("Error", "Administrador");
+            }
+
+            var PrimeraPosicion = claims.FirstOrDefault(x => x.Type == "Id");
+            var Id = PrimeraPosicion.Value;
+            var Segunda = claims.FirstOrDefault(x => x.Type == "Name");
+            var UserNombre = Segunda.Value;
+            var Tercera = claims.FirstOrDefault(x => x.Type == "Role");
+            var Role = Tercera.Value;
+            var UsuarioLogueado = usuarioRepository.GetUsuarioByName(UserNombre);
+
+            if (UsuarioLogueado != null)
+            {
+                if (UsuarioLogueado.TipoUsuario == Role)
+                {
+                    if (ModelState.IsValid)
+                    {
+
+                        var producto = productoRepository.GetProductoById(id);
+                        return View(producto);
+
+
+                    }
+                }
+
+                else
+                {
+                    RedirectToAction("Error", "Administrador");
+                }
+            }
+
+            return View();
+
+        }
+
+
+        [HttpPost]
+        public ActionResult Eliminar(Producto p)
+        {
+
+            Model1 context = new Model1();
+            ProductoRepository productoRepository = new ProductoRepository(context);
+            UsuarioRepository usuarioRepository = new UsuarioRepository(context);
+            OfertasRepository ofertasRepository = new OfertasRepository(context);
+            DevolucionesRepository devolucionesRepository = new DevolucionesRepository(context);
+
+
+            var identity = (ClaimsIdentity)User.Identity;
+            IEnumerable<Claim> claims = identity.Claims;
+            var valorvacio = claims.FirstOrDefault();
+            if (valorvacio.Value == "")
+            {
+                return RedirectToAction("Error", "Administrador");
+            }
+
+            var PrimeraPosicion = claims.FirstOrDefault(x => x.Type == "Id");
+            var Id = PrimeraPosicion.Value;
+            var Segunda = claims.FirstOrDefault(x => x.Type == "Name");
+            var UserNombre = Segunda.Value;
+            var Tercera = claims.FirstOrDefault(x => x.Type == "Role");
+            var Role = Tercera.Value;
+            var UsuarioLogueado = usuarioRepository.GetUsuarioByName(UserNombre);
+
+            var producto = productoRepository.GetProductoById(p.IdProducto);
+
+            if (UsuarioLogueado != null)
+            {
+                if (UsuarioLogueado.TipoUsuario == Role)
+                {
+                    var listaOfertas = ofertasRepository.ObtenerOfertasPorProducto(producto.IdProducto);
+                    var ListaDevolucion = devolucionesRepository.ObtenerDevolucionesPorProducto(producto.IdProducto);
+
+                    foreach (var item in listaOfertas)
+                    {
+                        ofertasRepository.EliminarOferta(item);
+                    }
+
+                    devolucionesRepository.Eliminar(ListaDevolucion);
+                    
+
+                    productoRepository.EliminarProducto(producto);
+                        return RedirectToAction("Index", "Administrador");
+                }
+
+                else
+                {
+                    RedirectToAction("Error", "Administrador");
+                }
+            }
+
             return View();
         }
 

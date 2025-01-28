@@ -112,8 +112,6 @@ namespace PruebaTecnica.Controllers
                 OfertasRepository.AgregarOferta(ofertasviewmodel.oferta);
             }
 
-
-
             return RedirectToAction("Index");
 
         }

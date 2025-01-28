@@ -18,7 +18,21 @@ namespace PruebaTecnica.Controllers
             ProductoRepository productoRepository = new ProductoRepository(context);
             OfertasRepository OfertasRepository = new OfertasRepository(context);
             var productos = productoRepository.GetProductos();
-            return View(productos);
+
+           
+
+            List<TiempoDevolucionViewModel> viewModels = new List<TiempoDevolucionViewModel>();
+
+
+            foreach (var producto in productos)
+            {
+                TiempoDevolucionViewModel vm = new TiempoDevolucionViewModel(producto);
+                viewModels.Add(vm);
+            }
+            return View(viewModels);
+
+
+                      
         }
 
         [HttpGet]
@@ -73,6 +87,10 @@ namespace PruebaTecnica.Controllers
                 return Json(new { success = false, message = "Ya hubo una devolucion por el producto", redirectUrl = Url.Action("Index", "Devoluciones") });
             }
 
+            if (string.IsNullOrWhiteSpace(comentario))
+            {
+                return Json(new { success = false, message = "El Comentario No Puede ir vacio", redirectUrl = Url.Action("Index", "Devoluciones") });
+            }
 
             if (DateTime.Now > producto.TiempoDevolucion)
             {
@@ -80,6 +98,8 @@ namespace PruebaTecnica.Controllers
                 return Json(new { success = false, message = "El tiempo para devolver el producto ha expirado. El producto ha sido bloqueado.", redirectUrl = Url.Action("Index", "Devoluciones") });
             }
 
+
+         
           
             var devolucion = new Devolucione
             {

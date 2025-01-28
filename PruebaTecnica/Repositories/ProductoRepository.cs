@@ -36,7 +36,6 @@ namespace PruebaTecnica.Repositories
             producto.NombreProducto = P.NombreProducto;
             producto.FechaIngreso = P.FechaIngreso;
             producto.TiempoDevolucion = P.TiempoDevolucion;
-
             context.SaveChanges();
         }
 
